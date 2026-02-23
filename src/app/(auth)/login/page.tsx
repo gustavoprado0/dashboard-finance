@@ -21,9 +21,9 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className='flex flex-col gap-3'>
-        <div className='flex items-center gap-5'>
+        <div className='flex justify-between items-center gap-5'>
           <p>Não tem uma conta?</p>
-          <Link href='/register'>Criar Conta</Link>
+          <Link href='/register' className='text-blue-300 hover:text-blue-500 underline'>Criar Conta</Link>
         </div>
         <LoginForm />
       </div>

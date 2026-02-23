@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRegister } from '../hooks/mutations/useRegister';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export function RegisterForm() {
   const router = useRouter();
@@ -16,9 +17,10 @@ export function RegisterForm() {
     e.preventDefault();
     try {
       await mutateAsync({ name, email, password });
+      toast.success('Conta criada com sucesso!');
       router.push('/login');
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      toast.error(err.message || 'Erro ao criar conta');
     }
   }
 
@@ -67,10 +69,6 @@ export function RegisterForm() {
           required
         />
       </div>
-
-      {error && (
-        <p className="text-sm text-red-500">{error.message}</p>
-      )}
 
       <button
         type="submit"

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useLogin } from '../hooks';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export function LoginForm() {
   const router = useRouter();
@@ -13,17 +14,12 @@ export function LoginForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
     try {
-      await mutateAsync({
-        email,
-        password,
-      });
-
-      // Redireciona após login
+      await mutateAsync({ email, password });
       router.push('/dashboard');
-    } catch (err) {
-      console.error(err);
+      toast.success('Usuário logado com sucesso!')
+    } catch (err: any) {
+      toast.error(err.message || 'Email ou senha inválidos');
     }
   }
 
@@ -62,12 +58,6 @@ export function LoginForm() {
           required
         />
       </div>
-
-      {error && (
-        <p className="text-sm text-red-500">
-          Email ou senha inválidos
-        </p>
-      )}
 
       <button
         type="submit"
