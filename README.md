@@ -20,19 +20,35 @@ Dashboard financeiro completo com Next.js, Prisma e PostgreSQL para visualizaç�
 ```
 src/
 ├── app/
+│   ├── (auth)/
+│   │   ├── login/page.tsx
+│   │   └── register/page.tsx
+│   ├── (dashboard)/
+│   │   ├── dashboard/page.tsx
+│   │   └── layout.tsx
 │   └── api/
-│       ├── dashboard/          # GET /api/dashboard (payload completo)
-│       ├── transactions/       # POST criar transação
-│       ├── financial-reserve/  # POST criar reserva financeira
-│       └── seed/               # POST popular / DELETE limpar dados
+│       ├── auth/
+│       │   ├── login/route.ts
+│       │   └── register/route.ts
+│       ├── dashboard/route.ts
+│       ├── financial-reserve/route.ts
+│       ├── seed/route.ts
+│       └── transactions/route.ts
 ├── features/
+│   ├── auth/
+│   │   ├── components/       # LoginForm, RegisterForm, AuthGuard, LogoutButton
+│   │   ├── hooks/            # useAuth, useLogin, useLogout, useRegister, useUser
+│   │   ├── services/         # auth.service.ts
+│   │   └── types/            # auth.types.ts, auth.dto.ts
 │   └── dashboard/
-│       ├── components/         # Componentes visuais
-│       ├── hooks/              # useDashboard
-│       ├── services/           # DashboardService (queries Prisma)
-│       └── types/              # Interfaces TypeScript
+│       ├── components/       # DashboardComponent, DonutCard, MetricCard, etc.
+│       ├── hooks/            # useDashboard
+│       ├── services/         # dashboard.service.ts
+│       └── types/            # dashboard.types.ts
 └── lib/
-    └── prisma.ts               # Singleton do Prisma Client
+    ├── api.ts
+    ├── prisma.ts             # Singleton do Prisma Client
+    └── providers.tsx
 ```
 
 ---
@@ -84,6 +100,16 @@ Acesse [http://localhost:3000](http://localhost:3000)
 
 ## 🗄️ Modelos do Banco de Dados
 
+### User
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | String | ID único (UUID) |
+| `name` | String | Nome do usuário |
+| `email` | String | Email único |
+| `password` | String | Senha hash |
+| `createdAt` | DateTime | Data de criação |
+
 ### Transaction
 
 | Campo | Tipo | Descrição |
@@ -110,17 +136,20 @@ Acesse [http://localhost:3000](http://localhost:3000)
 
 ## 🔌 Endpoints da API
 
+### Autenticação
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `POST` | `/api/auth/register` | Criar conta |
+| `POST` | `/api/auth/login` | Entrar |
+
 ### Dashboard
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| `GET` | `/api/dashboard` | Payload completo |
-| `GET` | `/api/dashboard/metrics` | KPI cards |
-| `GET` | `/api/dashboard/billing` | Faturamento mensal (12 meses) |
-| `GET` | `/api/dashboard/financial` | Gráfico financeiro diário |
-| `GET` | `/api/dashboard/payment` | Meios de pagamento |
+| `GET` | `/api/dashboard` | Payload completo (métricas + gráficos + pagamentos) |
 
-Todos os endpoints aceitam os query params:
+Aceita query params de filtro:
 
 ```
 ?startDate=2024-01-01&endDate=2024-12-31
@@ -200,7 +229,7 @@ DELETE http://localhost:3000/api/seed
 |------------|-----------|
 | `MetricCard` | Cards de KPI com sparkline |
 | `DonutCard` | Gráfico donut por meio de pagamento |
-| `FaturamentoChart` | Gráfico de barras faturamento x estornado |
+| `FaturamentoChart` | Gráfico de barras faturamento x estornado (12 meses) |
 | `FinanceiroChart` | Gráfico de área financeiro diário |
 | `PaymentMethods` | Lista de meios de pagamento com barra de progresso |
 
@@ -209,9 +238,10 @@ DELETE http://localhost:3000/api/seed
 ## 🔧 Scripts disponíveis
 
 ```bash
-pnpm dev          # Inicia em desenvolvimento
-pnpm build        # Build de produção
-pnpm start        # Inicia em produção
-pnpm lint         # Verifica erros de lint
-npx prisma studio # Interface visual do banco de dados
+pnpm dev           # Inicia em desenvolvimento
+pnpm build         # Build de produção
+pnpm start         # Inicia em produção
+pnpm lint          # Verifica erros de lint
+npx prisma studio  # Interface visual do banco de dados
+npx prisma db push # Sincroniza schema com o banco
 ```
