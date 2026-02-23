@@ -22,10 +22,6 @@ src/
 ├── app/
 │   └── api/
 │       ├── dashboard/          # GET /api/dashboard (payload completo)
-│       │   ├── billing/        # GET faturamento mensal
-│       │   ├── financial/      # GET gráfico financeiro diário
-│       │   ├── metrics/        # GET KPI cards
-│       │   └── payment/        # GET meios de pagamento
 │       ├── transactions/       # POST criar transação
 │       ├── financial-reserve/  # POST criar reserva financeira
 │       └── seed/               # POST popular / DELETE limpar dados
