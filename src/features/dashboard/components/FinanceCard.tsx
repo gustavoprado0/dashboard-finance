@@ -8,16 +8,20 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  ReferenceLine,
 } from 'recharts';
 import { MoreVertical } from 'lucide-react';
+import { DailyFinancial } from '../types/dashboard.types';
 
-const data = Array.from({ length: 30 }, (_, i) => ({
+const FALLBACK_DATA: DailyFinancial[] = Array.from({ length: 30 }, (_, i) => ({
   day: i + 1,
   value: 800 + Math.sin(i * 0.4) * 200 + Math.random() * 100 + i * 25,
 }));
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+interface FinanceiroChartProps {
+  data?: DailyFinancial[];
+}
+
+const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-lg bg-[#2BBFBF] px-3 py-1 text-white text-sm font-semibold shadow">
@@ -28,7 +32,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-export function FinanceiroChart() {
+export function FinanceiroChart({ data }: FinanceiroChartProps) {
+  const chartData = data ?? FALLBACK_DATA;
+
   return (
     <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
@@ -38,7 +44,7 @@ export function FinanceiroChart() {
         </button>
       </div>
       <ResponsiveContainer width="100%" height={220}>
-        <AreaChart data={data} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
+        <AreaChart data={chartData} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#2BBFBF" stopOpacity={0.15} />
@@ -72,17 +78,6 @@ export function FinanceiroChart() {
           />
         </AreaChart>
       </ResponsiveContainer>
-      <div className="mt-2 flex items-center gap-2">
-        <button className="flex items-center gap-1 rounded-full border border-gray-200 px-3 py-1 text-xs text-gray-500 hover:bg-gray-50">
-          <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5" />
-          </svg>
-          Pressione & Arraste
-          <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-        </button>
-      </div>
     </div>
   );
 }

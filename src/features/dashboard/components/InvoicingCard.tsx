@@ -8,10 +8,10 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from 'recharts';
+import { MonthlyBilling } from '../types/dashboard.types';
 
-const data = [
+const FALLBACK_DATA: MonthlyBilling[] = [
   { month: 'Jan', faturamento: 900, estornado: 300 },
   { month: 'Feb', faturamento: 850, estornado: 250 },
   { month: 'Mar', faturamento: 880, estornado: 280 },
@@ -26,12 +26,18 @@ const data = [
   { month: 'Dec', faturamento: 960, estornado: 360 },
 ];
 
-export function FaturamentoChart() {
+interface FaturamentoChartProps {
+  data?: MonthlyBilling[];
+}
+
+export function FaturamentoChart({ data }: FaturamentoChartProps) {
+  const chartData = data ?? FALLBACK_DATA;
+
   return (
     <div className="h-full rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
       <h2 className="mb-4 text-sm font-semibold text-gray-700">Faturamento x Estornado</h2>
       <ResponsiveContainer width="100%" height={220}>
-        <BarChart data={data} barSize={14} barGap={2}>
+        <BarChart data={chartData} barSize={14} barGap={2}>
           <CartesianGrid vertical={false} stroke="#f0f0f0" />
           <XAxis
             dataKey="month"

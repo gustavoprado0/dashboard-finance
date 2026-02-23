@@ -13,3 +13,42 @@ model User {
   password  String
   createdAt DateTime @default(now())
 }
+
+enum TransactionStatus {
+  PENDING
+  APPROVED
+  PAID
+  REFUNDED
+  PRE_CHARGEBACK
+  CHARGEBACK
+  FAILED
+}
+
+enum PaymentMethod {
+  pix
+  credit_card
+  boleto
+}
+
+model Transaction {
+  id            String            @id @default(cuid())
+  amount        Float
+  status        TransactionStatus
+  paymentMethod PaymentMethod
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([status, createdAt])
+  @@index([paymentMethod, createdAt])
+  @@map("transactions")
+}
+
+model FinancialReserve {
+  id        String   @id @default(cuid())
+  amount    Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+  @@map("financial_reserves")
+}
